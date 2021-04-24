@@ -5,15 +5,105 @@
 {% block body %}
     
     {% for order in order_placed %}
+    <div style='display: none;'>
         <div class='hiddenCartList' style="display: none;">
             {{ order.cartItemDetails }}
         </div>
+        <span class='orderTransactionId'>
+            {{ order.transaction_id }}
+        </span>
+        <span class='orderDeliveryDate'>
+            {{ order.deliveryDate }}
+        </span>
+        <span class='orderorderStage'>
+            {{ order.order_stage }}
+        </span>
+    </div>
     {% endfor %}
 
+    <div id='placedOrders'>     
+        <h1>PLACED ORDERS</h1>   
+    </div>
+
+
+<!-- Orders being processed-->
+    {% for order in processing %}
+    <div style='display: none;'>
+        <div class='hiddenCartListprocessing'>
+            {{ order.cartItemDetails }}
+        </div>
+        <span class='processingTransactionId'>
+            {{ order.transaction_id }}
+        </span>
+        <span class='processingDeliveryDate'>
+            {{ order.deliveryDate }}
+        </span>
+        <span class='processingorderStage'>
+            {{ order.order_stage }}
+        </span>
+    </div>
+    {% endfor %}
+
+    <div id='placedprocessing'>     
+        <h1>PROCESSING</h1>   
+    </div>
     
+
+<!-- Orders delivered-->
+{% for order in delivered %}
+<div style='display: none;'>
+    <div class='hiddenCartListdelivered'>
+        {{ order.cartItemDetails }}
+    </div>
+    <span class='deliveredTransactionId'>
+        {{ order.transaction_id }}
+    </span>
+    <span class='deliveredDeliveryDate'>
+        {{ order.deliveryDate }}
+    </span>
+    <span class='deliveredorderStage'>
+        {{ order.order_stage }}
+    </span>
+</div>
+{% endfor %}
+
+<div id='placeddelivered'>     
+    <h1>DELIVERED</h1>   
+</div>
+
+
     <script>
+        orderPlacedIndex = 0
         document.querySelectorAll('.hiddenCartList').forEach(cart => {
             cartItems = eval(cart.innerHTML)
+            cartHouse = document.createElement('div')
+            cartHouse.classList.add('cartHouse')
+
+            transactionId = document.getElementsByClassName('orderTransactionId')[orderPlacedIndex].innerHTML
+            deliveryDate = document.getElementsByClassName('orderDeliveryDate')[orderPlacedIndex].innerHTML
+            orderStage = document.getElementsByClassName('orderorderStage')[orderPlacedIndex].innerHTML
+            
+            transId = document.createElement('span')
+            transId.classList.add('summary')
+            transId.innerHTML = `Transaction ID: ${transactionId}`
+
+            delivery = document.createElement('span')
+            delivery.classList.add('summary')
+            delivery.innerHTML = `Expected DeliveryDate: ${deliveryDate}`
+
+            order = document.createElement('span')
+            order.classList.add('summary')
+            order.innerHTML = `Order Stage: ${orderStage}`
+
+            cartHouse.appendChild(transId)
+            cartHouse.appendChild(delivery)
+            cartHouse.appendChild(order)
+
+
+
+
+            //alert(`${transactionId}, ${deliveryDate}, ${orderStage}`)
+
             table = document.createElement('table')
             table.innerHTML = `
                     <thead>
@@ -40,8 +130,142 @@
               tbody.appendChild(tr)                
             }
             table.appendChild(tbody);
-            document.querySelector('body').appendChild(table)
+            cartHouse.appendChild(table)
+            document.querySelector('#placedOrders').appendChild(cartHouse)
+            orderPlacedIndex += 1;
         })
+
+
+
+        processingPlacedIndex = 0
+        document.querySelectorAll('.hiddenCartListprocessing').forEach(cart => {
+            cartItems = eval(cart.innerHTML)
+            cartHouse = document.createElement('div')
+            cartHouse.classList.add('cartHouse')
+
+            transactionId = document.getElementsByClassName('processingTransactionId')[processingPlacedIndex].innerHTML
+            deliveryDate = document.getElementsByClassName('processingDeliveryDate')[processingPlacedIndex].innerHTML
+            orderStage = document.getElementsByClassName('processingorderStage')[processingPlacedIndex].innerHTML
+            
+            transId = document.createElement('span')
+            transId.classList.add('summary')
+            transId.innerHTML = `Transaction ID: ${transactionId}`
+
+            delivery = document.createElement('span')
+            delivery.classList.add('summary')
+            delivery.innerHTML = `Expected DeliveryDate: ${deliveryDate}`
+
+            order = document.createElement('span')
+            order.classList.add('summary')
+            order.innerHTML = `Order Stage: ${orderStage}`
+
+            cartHouse.appendChild(transId)
+            cartHouse.appendChild(delivery)
+            cartHouse.appendChild(order)
+
+
+
+
+            //alert(`${transactionId}, ${deliveryDate}, ${orderStage}`)
+
+            table = document.createElement('table')
+            table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Product Price</th>
+                            <th>Quantity Ordered</th>
+                            <th>Color</th>
+                            <th>Size</th>
+                        </tr>
+                    </thead>
+                `
+                tbody = document.createElement('tbody')
+            for(i=0; i < cartItems.length; i++){
+              cartItem = cartItems[i]
+              tr = document.createElement('tr')
+              tr.innerHTML = `
+                <td>${cartItem.productname}</td>
+                <td>${cartItem.productprice}</td>
+                <td>${cartItem.qty}</td>
+                <td>${cartItem.color}</td>
+                <td>${cartItem.size}</td>
+              `
+              tbody.appendChild(tr)                
+            }
+            table.appendChild(tbody);
+            cartHouse.appendChild(table)
+            document.querySelector('#placedprocessing').appendChild(cartHouse)
+            processingPlacedIndex += 1;
+        })
+
+
+
+        deliveredPlacedIndex = 0
+        document.querySelectorAll('.hiddenCartListdelivered').forEach(cart => {
+            cartItems = eval(cart.innerHTML)
+            cartHouse = document.createElement('div')
+            cartHouse.classList.add('cartHouse')
+
+            transactionId = document.getElementsByClassName('deliveredTransactionId')[deliveredPlacedIndex].innerHTML
+            deliveryDate = document.getElementsByClassName('deliveredDeliveryDate')[deliveredPlacedIndex].innerHTML
+            orderStage = document.getElementsByClassName('deliveredorderStage')[deliveredPlacedIndex].innerHTML
+            
+            transId = document.createElement('span')
+            transId.classList.add('summary')
+            transId.innerHTML = `Transaction ID: ${transactionId}`
+
+            delivery = document.createElement('span')
+            delivery.classList.add('summary')
+            delivery.innerHTML = `Expected DeliveryDate: ${deliveryDate}`
+
+            order = document.createElement('span')
+            order.classList.add('summary')
+            order.innerHTML = `Order Stage: ${orderStage}`
+
+            cartHouse.appendChild(transId)
+            cartHouse.appendChild(delivery)
+            cartHouse.appendChild(order)
+
+
+
+
+            //alert(`${transactionId}, ${deliveryDate}, ${orderStage}`)
+
+            table = document.createElement('table')
+            table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Product Price</th>
+                            <th>Quantity Ordered</th>
+                            <th>Color</th>
+                            <th>Size</th>
+                        </tr>
+                    </thead>
+                `
+                tbody = document.createElement('tbody')
+            for(i=0; i < cartItems.length; i++){
+              cartItem = cartItems[i]
+              tr = document.createElement('tr')
+              tr.innerHTML = `
+                <td>${cartItem.productname}</td>
+                <td>${cartItem.productprice}</td>
+                <td>${cartItem.qty}</td>
+                <td>${cartItem.color}</td>
+                <td>${cartItem.size}</td>
+              `
+              tbody.appendChild(tr)                
+            }
+            table.appendChild(tbody);
+            cartHouse.appendChild(table)
+            document.querySelector('#placeddelivered').appendChild(cartHouse)
+            deliveredPlacedIndex += 1;
+        })
+
+        
+        
+        
     </script>
 
 {% endblock %}
