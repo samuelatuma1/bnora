@@ -149,7 +149,7 @@
 					
 
 					if(item.available){
-						alert('available')
+						//alert('available')
 						/*
 						totalCost -= (parseInt(item.price) * parseInt(item.orderQty))
 						cartItems = JSON.parse(localStorage.getItem('bnoraUserCart'))
@@ -241,7 +241,7 @@
 				<div id='subtotal'>SUBTOTAL </div> 
 				<span> &#x20A6;${totalCost} </span>`
 			localStorage.setItem('totalCost', totalCost)
-			alert(localStorage.getItem('totalCost'))
+			//alert(localStorage.getItem('totalCost'))
 			if(totalCost > 0){
 			document.querySelector('body').appendChild(subtotal);
 			

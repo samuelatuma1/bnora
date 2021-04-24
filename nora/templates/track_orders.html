@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %} B'Nora Fashion {% endblock %}
+
+{% block body %}
+    {% for order in order_placed %}
+        {{ order.cartItemDetails }}
+    {% endfor %}
+{% endblock %}

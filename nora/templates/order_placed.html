@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %} B'Nora Fashion {% endblock %}
+
+{% block body %}
+<style>
+    #orderPlaced{
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        background-color: maroon;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: auto;
+    }
+    .stage{
+        color: red;
+    }
+    .stage::after{
+        content: ' \2713';
+    }
+</style>
+<div id='orderPlaced'>
+    Order Placed
+</div>
+<h2 style='text-align: center;'>Transaction id: {{ recent_purchase.transaction_id }}</h2>
+
+<div>
+    <h2>Track your Order</h2>
+
+    <h3 
+    class='{% if recent_purchase.order_stage == 'Order placed' %}
+        stage
+    {% endif %}'>Order placed</h3>
+    <h3 
+    class='{% if recent_purchase.order_stage == 'Processing' %}
+        stage
+    {% endif %}'>In transit</h3>
+
+    <h3 
+    class='{% if recent_purchase.order_stage == 'Delivered' %}
+        stage
+    {% endif %}'>Delivered</h3>
+</div>
+
+    <a href='{% url "trackOrders" %}'>View your orders</a>
+{% endblock %}

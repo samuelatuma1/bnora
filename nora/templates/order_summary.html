@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %} B'Nora Fashion {% endblock %}
+
+{% block body %}
+<style>
+    .summary{
+        border: 1px solid rgb(230, 227, 227);
+        border-radius: 10px;
+        padding: 10px;
+        background-color: white;
+        margin-bottom: 15px;
+    }
+    .summary > div{
+        display: flex;
+        
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+    body{
+        background-color: aliceblue;
+    }
+    
+    .summary th{
+        background-color: brown;
+        color: rgb(252, 241, 241);
+    }
+    .summary th, .summary td{
+        align-items: center;
+        text-align: center;
+        border-radius: 5px;
+        padding: 5px;
+    }
+    .summary tr:nth-child(2){
+        background-color: rgb(182, 201, 238);
+    }
+    #confirm{
+        min-width: 60px;
+        padding: 12px;
+        background-color: maroon;
+        color: rgb(255, 238, 238);
+        font-size: large;
+        border: 1px solid maroon;
+        border-radius: 8px;
+    }
+</style>
+<div class='summary'>
+<h1> ORDER SUMMARY </h1>
+    {% if product_purchases %}
+    <table>
+        <thead>
+            <tr>
+                <th style='width: 50%;'>PRODUCT NAME</th>
+                <th>QTY ORDERED</th>
+                <th>PRICE</th>
+                <th>COLOR</th>
+                <th>SIZE</th>
+            </tr>
+        </thead>
+    {% for product in product_purchases %}
+    <tr>
+        <td  style='width: 50%;'>{{ product.name }}</td>
+        <td>{{ product.qty }}</td>
+        <td>&#x20A6;{{ product.price }}</td>
+        <td>{{ product.color }}</td>
+        <td>{{ product.size }}</td>
+    </tr>
+
+   
+    {% endfor %}
+    </table>
+    <div class='total'>
+        <h1>TOTAL <span>&#x20A6;{{ total_cost }}</span></h1>
+    </div>
+    
+    {% endif %}
+</div>
+
+<div class='summary'>
+    <h1>ADDRESS</h1>
+    <p>{{ recent_purchase.deliveryAddress }}</p>
+</div>
+
+<div class='summary'>
+    <h1>DELIVERY METHOD</h1>
+    <p>{{ recent_purchase.deliveryMethod }}</p>
+</div>
+
+<div class='summary'>
+    <h1>PAYMENT METHOD</h1>
+    <p>{{ recent_purchase.paymentMethod }}</p>
+</div>
+<a href='{% url "order_placed" %}'><button id='confirm'>CONFIRM</button></a>
+{% endblock %}

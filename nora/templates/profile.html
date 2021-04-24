@@ -3,39 +3,52 @@
 {% block title %} B'Nora Fashion {% endblock %}
 
 {% block body %}
+<style>
+	.deliveryMethod{
+		width: 97%;
+		min-height: 100px;
+		border: 1px solid #e6e5e5;
+		margin-bottom: 10px;
+		box-shadow: 4px 4px #f8f8f8;
+		border-radius: 10px;
+		padding: 12px;
+	}
+</style>
 <h1 id='activeh1'>DELIVERY</h1>
 
-<form method='post'>
+<form method='post' action='{% url "payment" %}' id='deliveryForm'>
+	<div id='showFirst'>
 	{% csrf_token %}
 	{{ userEdit.as_p }}
 	{{ profileEdit.as_p }}
-	
+	<input name='deliveryDate' type='hidden' />
 	<h1> DELIVERY METHOD</h1>
 	<div class='deliveryMethod'>
-		<input type='radio' id='doorDelivery' name='deliveryMethod' value='door delivery'>
-		<label for='doorDelivery'>Door Delivery</label><br/>
+		<input type='radio' id='doorDelivery' name='deliveryMethod' value='door delivery' checked>
+		<label for='doorDelivery' id='deliveryDate1'>Door Delivery</label><br/>
 	</div>
+	
 	
 	<div class='deliveryMethod'>
 		<input type='radio' name='deliveryMethod' value='Pick Up' id='pickUp'>
-		<label for='pickUp'>Pick Up (Free)</label><br/><br/>
+		<label for='pickUp' id='deliveryDate2'>Pick Up (Free)</label><br/><br/>
 	</div>
-	<style>
-		.deliveryMethod{
-			width: 97%;
-			min-height: 100px;
-			border: 1px solid #e6e5e5;
-			margin-bottom: 10px;
-			box-shadow: 4px 4px #f8f8f8;
-			border-radius: 10px;
-			padding: 12px;
-		}
-	</style>
-	
-	<input type='submit' value='Submit ' />
-</form>
 
+	<input type='hidden' name='cartItemDetails' />
+	</div>
 
+	<div id='showNext'>
+		<h1>PAYMENT</h1>
+		<div class='deliveryMethod'>
+			<input type='radio' id='paymentMethod' name='paymentMethod' value='Cash on Delivery' checked>
+			<label for='paymentMethod'>Cash on Delivery</label><br/>
+		</div>
+		
+		<div class='deliveryMethod'>
+			<input type='radio' id='paymentMethod2' name='paymentMethod' value='Pay with Card' >
+			<label for='paymentMethod2'>Pay with Card (Unavailable for now)</label><br/>
+		</div>
+	</div>
 
 	<style>
 		form{
@@ -106,13 +119,6 @@
 					productHouse = document.createElement('div')
 					productHouse.setAttribute('class', 'productHouse')
 					
-					img = document.createElement('img')
-					img.src = item.image_url
-					imageHouse = document.createElement('div')
-					imageHouse.classList.add('imageHouse')
-					imageHouse.append(img)
-					
-					productHouse.appendChild(imageHouse)
 					color = ''
 					size=''
 					if(item.color != 'empty'){
@@ -144,34 +150,28 @@
 					modifyQty.setAttribute('id', 'modifyQty')
 					
 					//Make unavailable if unavailable
-
-					
-
 					if(item.available){
-						alert('available')
-						/*
-						totalCost -= (parseInt(item.price) * parseInt(item.orderQty))
-						cartItems = JSON.parse(localStorage.getItem('bnoraUserCart'))
-						unavailableProductId = item.id
-						for(var k=0; k < cartItems.length; k++){
-							cartItem = cartItems[k]
-							
-							if(cartItem.productid == unavailableProductId){
-								cartItem.is_available = 'false';
-								localStorage.setItem('bnoraUserCart', JSON.stringify(cartItems))
-								productHouse.style.opacity = '0.5';
-								a.innerHTML += 'unavailable';
-								
-							}*/
+						//alert('available')
+						
 						}
-					
-					// If by some means, it becomes re-available, show back in cart
-					
+				// Completely remove unavailable items from list
 					else{
 						totalCost -= (parseInt(item.price) * parseInt(item.orderQty))
 						productHouse.style.opacity = '0.6';
 						a.innerHTML += 'quantity demanded unavailable';
+
+
+						id = item.id
+						cartItems = JSON.parse(localStorage.getItem('bnoraUserCart'))
 						
+						for(var index=0; i < cartItems.length; index++){
+							cartItem = cartItems[index]
+							if(cartItem.productid == id){
+								cartItems.splice(index, 1)
+								localStorage.setItem('bnoraUserCart', JSON.stringify(cartItems))
+								location.reload();
+							}
+						}	
 					}
 
 					//Change qty in cart
@@ -230,37 +230,135 @@
 					modifyQty.appendChild(cart_qty)
 					
 					productHouse.appendChild(modifyQty)
-					document.querySelector('body').appendChild(productHouse)
+					document.querySelector('form').appendChild(productHouse)
 					
 				}
 			subtotal = document.createElement('div')
 			subtotal.classList.add('subtotal')
 			subtotal.setAttribute('id', 'subtot')
 			subtotal.innerHTML = `
-				<div id='subtotal'>SUBTOTAL </div> 
+				<div id='subtotal'>TOTAL </div> 
 				<span> &#x20A6;${totalCost} </span>`
 			localStorage.setItem('totalCost', totalCost)
-			alert(localStorage.getItem('totalCost'))
 			if(totalCost > 0){
-			document.querySelector('body').appendChild(subtotal);
+			document.querySelector('form').appendChild(subtotal);
 			
 			checkout = document.createElement('div')
 			checkout.classList.add('subtotal')
-			checkout.innerHTML = 'CHECK OUT'
+			checkout.innerHTML = 'PROCEED TO NEXT STEP'
 			var a = document.createElement('a')
 			a.href= '{% url "address" %}'
 			a.style.textDecoration = 'none'
-			a.appendChild(checkout)
+			//a.appendChild(checkout)
 			checkout.onclick = () => {
 				//alert('tata4')
 			}
-			document.querySelector('body').appendChild(a)
+			// Add expected time of delivery
+			deliveryDate1 = document.querySelector('#deliveryDate1')
+			date = new Date()
+			date.setDate(date.getDate() + 2)
+			deliveryDate1.innerHTML +=`<br/> Delivered on or before ${date}`
+			document.getElementsByName('deliveryDate')[0].value = `${date}`
+			deliveryDate2 = document.querySelector('#deliveryDate2')
+			date2 = new Date()
+			
+			date2.setDate(date.getDate() + 1)
+			deliveryDate2.innerHTML +=`<br/> Delivered on or before ${date}`
+
+
+
+			document.querySelector('form').appendChild(a)
+			button = document.createElement('button')
+			button.classList.add('subtotal')
+			button.style.width = '99%'
+			button.innerHTML = 'PROCEED TO NEXT'
+			document.querySelector('form').append(button)
+			
+			
+
+			deliveryForm = document.querySelector('#deliveryForm')
+			deliveryForm.onsubmit = () => {
+				
+				cartItemDetails = document.getElementsByName('cartItemDetails')[0]
+				cartItemDetails.value = localStorage.getItem('bnoraUserCart')
+				localStorage.setItem('bnoraUserCart', '[]')
+					
+			}
 			}
 		}
 					
+
 			
 		}
 
 	</script>
+	<style>
 
+.productHouse{
+		background-color: white;
+		display: flex;
+		flex-wrap: wrap;
+		margin: 10px;
+		padding-top: 20px;
+		border: 1px solid #eeeeee;
+		border-radius: 10px;
+		margin-bottom: 30px;
+		font-size: 30px;
+	}
+	.productHouse .imageHouse{
+		width: 30%;
+		
+	}
+	.imageHouse img{
+		width: 250px;
+	}
+	
+	.remove{
+		padding-left: 20px;
+		padding-right: 20px;
+		border: 1px solid grey;
+		border-radius: 5px;
+	}
+	#modifyQty{
+		width: 100%;
+		display: flex;
+		justify-content: space-around;
+		border-top: 1px solid grey;
+		border-bottom: 1px solid grey;
+		padding: 10px;
+		background-color:  rgb(123,171,228);
+		
+	}
+	body{
+		background-color: #f0f8ff;
+	}
+	#modifyQty select, #modifyQty span{
+		background-color: white;
+		font-size: 30px;
+		padding: 20px;
+	}
+	.subtotal{
+		margin-top: 30px;
+		background-color: rgb(109, 109, 236);
+		border: 1px solid rgb(109, 109, 236);
+		border-radius: 10px;
+		color: white;
+		padding: 20px;
+		font-size: 35px;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-around;
+	}
+	#subtot{
+		background: white;
+		color: black;
+		border: 1px solid grey;
+	}
+	#subtotal{
+		width: 50%;
+	}
+	</style>
+
+
+</form>
 {% endblock %}
