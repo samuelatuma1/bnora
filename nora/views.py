@@ -261,6 +261,7 @@ def order_placed(request):
 
 @login_required
 def track_orders(request):
+    #Desk.objects.filter(name=request.user).all().delete()
     order_placed = Desk.objects.filter(name=request.user).filter(order_stage='Order placed').order_by('-deliveryDate').all()  
     processing = Desk.objects.filter(name=request.user).filter(order_stage='Processing').order_by('-deliveryDate').all()
     delivered =  Desk.objects.filter(name=request.user).filter(order_stage='Delivered').order_by('-deliveryDate').all()

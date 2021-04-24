@@ -3,7 +3,45 @@
 {% block title %} B'Nora Fashion {% endblock %}
 
 {% block body %}
+    
     {% for order in order_placed %}
-        {{ order.cartItemDetails }}
+        <div class='hiddenCartList' style="display: none;">
+            {{ order.cartItemDetails }}
+        </div>
     {% endfor %}
+
+    
+    <script>
+        document.querySelectorAll('.hiddenCartList').forEach(cart => {
+            cartItems = eval(cart.innerHTML)
+            table = document.createElement('table')
+            table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Product Price</th>
+                            <th>Quantity Ordered</th>
+                            <th>Color</th>
+                            <th>Size</th>
+                        </tr>
+                    </thead>
+                `
+                tbody = document.createElement('tbody')
+            for(i=0; i < cartItems.length; i++){
+              cartItem = cartItems[i]
+              tr = document.createElement('tr')
+              tr.innerHTML = `
+                <td>${cartItem.productname}</td>
+                <td>${cartItem.productprice}</td>
+                <td>${cartItem.qty}</td>
+                <td>${cartItem.color}</td>
+                <td>${cartItem.size}</td>
+              `
+              tbody.appendChild(tr)                
+            }
+            table.appendChild(tbody);
+            document.querySelector('body').appendChild(table)
+        })
+    </script>
+
 {% endblock %}
